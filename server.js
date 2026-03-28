@@ -688,7 +688,7 @@ app.get("/admin", requireAdmin, requireVerifiedEmail, async (req, res, next) => 
   }
 });
 
-app.post("/admin/series", requireAdmin, requireVerifiedEmail, adminRateLimit, csrfProtection, upload.fields([{ name: "cover", maxCount: 1 }, { name: "banner", maxCount: 1 }]), async (req, res, next) => {
+app.post("/admin/series", requireAdmin, requireVerifiedEmail, adminRateLimit, upload.fields([{ name: "cover", maxCount: 1 }, { name: "banner", maxCount: 1 }]), csrfProtection, async (req, res, next) => {
   try {
     const existingSeries = await getAllSeries();
     const title = String(req.body.title || "").trim();
@@ -729,7 +729,7 @@ app.post("/admin/series", requireAdmin, requireVerifiedEmail, adminRateLimit, cs
   }
 });
 
-app.post("/admin/chapter", requireAdmin, requireVerifiedEmail, adminRateLimit, csrfProtection, upload.array("pages", 200), async (req, res, next) => {
+app.post("/admin/chapter", requireAdmin, requireVerifiedEmail, adminRateLimit, upload.array("pages", 200), csrfProtection, async (req, res, next) => {
   try {
     const series = await getSeriesBySlug(String(req.body.seriesSlug || ""));
     if (!series) throw new Error("Series not found.");
