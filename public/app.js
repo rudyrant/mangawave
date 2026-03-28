@@ -1,5 +1,6 @@
 const historyKey = "mangawave-reading-history";
 const bookmarkKey = "mangawave-bookmarks";
+const readerModeKey = "mangawave-reader-mode";
 
 function currentLang() {
   return document.documentElement.lang === 'en' ? 'en' : 'ka';
@@ -185,23 +186,76 @@ function getLatestHistoryBySeries() {
   const reader = window.__MW_READER__;
   if (!reader) return;
 
+  const page = document.querySelector('.reader-page');
   const pages = document.querySelector('#reader-pages');
   const progressBar = document.querySelector('#reader-progress-bar');
   const progressLabel = document.querySelector('#reader-progress-label');
-  const updateProgress = () => {
-    if (!pages || !progressBar || !progressLabel) return;
+  const modeButtons = [...document.querySelectorAll('[data-reader-mode-toggle]')];
+  const normalizeMode = (value) => value === 'horizontal' ? 'horizontal' : 'vertical';
+  const getMode = () => normalizeMode(page?.dataset.readerMode);
+  const getProgressRatio = () => {
+    if (!pages) return 0;
+    if (getMode() === 'horizontal') {
+      const total = Math.max(pages.scrollWidth - pages.clientWidth, 1);
+      return Math.max(0, Math.min(1, pages.scrollLeft / total));
+    }
+
     const rect = pages.getBoundingClientRect();
     const viewport = window.innerHeight || document.documentElement.clientHeight || 1;
     const total = Math.max(rect.height - viewport, 1);
-    const raw = (viewport - rect.top) / total;
-    const percent = Math.max(0, Math.min(100, Math.round(raw * 100)));
+    return Math.max(0, Math.min(1, (viewport - rect.top) / total));
+  };
+  const renderProgress = () => {
+    if (!progressBar || !progressLabel) return;
+    const percent = Math.round(getProgressRatio() * 100);
     progressBar.style.width = `${percent}%`;
     progressLabel.textContent = `${percent}%`;
   };
+  const restoreProgressRatio = (ratio) => {
+    if (!pages) return;
+    if (getMode() === 'horizontal') {
+      const total = Math.max(pages.scrollWidth - pages.clientWidth, 0);
+      pages.scrollLeft = total * ratio;
+      return;
+    }
 
-  updateProgress();
-  window.addEventListener('scroll', updateProgress, { passive: true });
-  window.addEventListener('resize', updateProgress);
+    const viewport = window.innerHeight || document.documentElement.clientHeight || 1;
+    const targetTop = pages.offsetTop + (pages.offsetHeight - viewport) * ratio;
+    window.scrollTo({ top: Math.max(targetTop, 0) });
+  };
+  const applyMode = (nextMode, options = {}) => {
+    const normalized = normalizeMode(nextMode);
+    if (page) page.dataset.readerMode = normalized;
+    modeButtons.forEach((button) => {
+      const active = button.dataset.readerModeToggle === normalized;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+    if (options.persist !== false) localStorage.setItem(readerModeKey, normalized);
+    if (options.keepPosition != null) {
+      requestAnimationFrame(() => {
+        restoreProgressRatio(options.keepPosition);
+        renderProgress();
+      });
+      return;
+    }
+    renderProgress();
+  };
+  const savedMode = normalizeMode(localStorage.getItem(readerModeKey));
+  applyMode(savedMode, { persist: false });
+
+  modeButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const nextMode = normalizeMode(button.dataset.readerModeToggle);
+      if (nextMode === getMode()) return;
+      applyMode(nextMode, { keepPosition: getProgressRatio() });
+    });
+  });
+
+  renderProgress();
+  window.addEventListener('scroll', renderProgress, { passive: true });
+  window.addEventListener('resize', renderProgress);
+  pages?.addEventListener('scroll', renderProgress, { passive: true });
 
   const history = readStore(historyKey).filter((entry) => entry.seriesSlug !== reader.seriesSlug);
   history.unshift({

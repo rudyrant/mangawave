@@ -11,6 +11,16 @@
         <% if (nextChapter) { %><a href="/read/<%= series.slug %>/<%= nextChapter.slug %>" class="button button-primary"><%= t('readerNext') %></a><% } %>
       </div>
     </div>
+    <div class="reader-mode-shell">
+      <div class="reader-mode-copy">
+        <span class="eyebrow"><%= t('readerModeLabel') %></span>
+        <p class="muted"><%= t('readerModeHelp') %></p>
+      </div>
+      <div class="button-row" role="group" aria-label="<%= t('readerModeLabel') %>">
+        <button type="button" class="button button-secondary button-small is-active" data-reader-mode-toggle="vertical" aria-pressed="true"><%= t('readerModeVertical') %></button>
+        <button type="button" class="button button-secondary button-small" data-reader-mode-toggle="horizontal" aria-pressed="false"><%= t('readerModeHorizontal') %></button>
+      </div>
+    </div>
     <div class="reader-progress-shell" aria-hidden="true">
       <div class="reader-progress-meta">
         <span><%= t('readerProgress') %></span>
