@@ -1,0 +1,42 @@
+<header class="site-header">
+  <div class="shell header-row">
+    <a href="/" class="brand">
+      <div class="brand-mark">MW</div>
+      <div>
+        <div class="brand-name">MangaWave</div>
+        <div class="brand-sub"><%= t('siteTagline') %></div>
+      </div>
+    </a>
+    <div class="header-controls">
+      <nav class="nav-links">
+        <a href="/" class="button button-secondary <%= currentPath === '/' ? 'is-active' : '' %>"><%= t('navMain') %></a>
+        <a href="/series" class="button button-secondary <%= currentPath === '/series' ? 'is-active' : '' %>"><%= t('navCatalog') %></a>
+        <% if (currentUser) { %>
+          <a href="/account" class="button button-secondary <%= currentPath === '/account' ? 'is-active' : '' %>">@<%= currentUser.username %></a>
+          <% if (currentUser.role === 'admin') { %>
+            <a href="/admin" class="button button-primary <%= currentPath === '/admin' ? 'is-active' : '' %>"><%= t('navAdmin') %></a>
+          <% } %>
+          <form action="/logout" method="post" class="inline-form">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+            <button class="button button-secondary" type="submit"><%= t('navLogout') %></button>
+          </form>
+        <% } else { %>
+          <a href="/login" class="button button-secondary <%= currentPath === '/login' ? 'is-active' : '' %>"><%= t('navLogin') %></a>
+          <a href="/register" class="button button-primary <%= currentPath === '/register' ? 'is-active' : '' %>"><%= t('navRegister') %></a>
+        <% } %>
+      </nav>
+      <div class="language-control" role="group" aria-label="<%= t('headerLanguageLabel') %>">
+        <span class="language-label"><%= t('headerLanguageLabel') %></span>
+        <div class="language-toggle">
+          <a href="<%= langUrl('ka') %>" class="language-option <%= lang === 'ka' ? 'is-active' : '' %>"><%= t('langGeorgian') %></a>
+          <a href="<%= langUrl('en') %>" class="language-option <%= lang === 'en' ? 'is-active' : '' %>"><%= t('langEnglish') %></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<% if (flash && flash.message) { %>
+  <div class="shell flash-wrap">
+    <div class="flash flash-<%= flash.type %>"><%= flash.message %></div>
+  </div>
+<% } %>

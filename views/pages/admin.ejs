@@ -1,0 +1,138 @@
+<%- include('../partials/head', { pageTitle }) %>
+<%- include('../partials/header') %>
+<main class="shell stack-lg section-gap">
+  <section class="stack-sm">
+    <p class="eyebrow"><%= t('adminEyebrow') %></p>
+    <h1><%= t('adminTitle') %></h1>
+    <p class="lead"><%- t('adminLeadFull', { lead: t('adminLead'), mode: dbMode }) %></p>
+  </section>
+
+  <section class="info-grid info-grid-wide">
+    <div class="panel info-card"><span><%= t('adminStorageDriver') %></span><strong><%= storage.label %></strong></div>
+    <div class="panel info-card"><span><%= t('adminBucketPath') %></span><strong><%= storage.bucket %></strong></div>
+    <div class="panel info-card"><span><%= t('adminEndpoint') %></span><strong><%= storage.endpoint %></strong></div>
+    <div class="panel info-card"><span><%= t('adminImagePipeline') %></span><strong><%= t('adminOptimizeThumbs') %></strong></div>
+  </section>
+
+  <section class="admin-grid">
+    <form action="/admin/series" method="post" enctype="multipart/form-data" class="panel stack-md">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <div>
+        <p class="eyebrow"><%= t('adminNewSeries') %></p>
+        <h2><%= t('adminCreateSeries') %></h2>
+      </div>
+      <input class="input" name="title" placeholder="<%= t('adminSeriesTitlePlaceholder') %>" required />
+      <textarea class="input textarea" name="shortDescription" placeholder="<%= t('adminSeriesHookPlaceholder') %>" required></textarea>
+      <textarea class="input textarea tall" name="description" placeholder="<%= t('adminSeriesDescriptionPlaceholder') %>" required></textarea>
+      <div class="two-grid">
+        <input class="input" name="author" placeholder="<%= t('adminAuthorPlaceholder') %>" />
+        <input class="input" name="artist" placeholder="<%= t('adminArtistPlaceholder') %>" />
+      </div>
+      <div class="two-grid">
+        <select class="input" name="type"><option>Manhwa</option><option>Manga</option><option>Manhua</option></select>
+        <select class="input" name="status"><option>Ongoing</option><option>Completed</option><option>Hiatus</option></select>
+      </div>
+      <input class="input" name="genres" placeholder="<%= t('adminGenresPlaceholder') %>" />
+      <input class="input" name="tags" placeholder="<%= t('adminTagsPlaceholder') %>" />
+      <label class="upload-label"><%= t('adminCoverUpload') %><input type="file" name="cover" accept="image/*" /></label>
+      <label class="upload-label"><%= t('adminBannerUpload') %><input type="file" name="banner" accept="image/*" /></label>
+      <label class="check-row"><input type="checkbox" name="featured" /> <%= t('adminFeatureHomepage') %></label>
+      <label class="check-row"><input type="checkbox" name="mature" /> <%= t('adminMatureContent') %></label>
+      <button class="button button-primary" type="submit"><%= t('adminCreateSeriesButton') %></button>
+    </form>
+
+    <form action="/admin/chapter" method="post" enctype="multipart/form-data" class="panel stack-md">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <div>
+        <p class="eyebrow"><%= t('adminNewChapter') %></p>
+        <h2><%= t('adminUploadChapter') %></h2>
+        <p class="muted admin-note"><%= t('adminOrderNote') %></p>
+      </div>
+      <select class="input" name="seriesSlug" required>
+        <option value=""><%= t('adminChooseSeries') %></option>
+        <% series.forEach((item) => { %>
+          <option value="<%= item.slug %>"><%= item.title %></option>
+        <% }) %>
+      </select>
+      <input class="input" name="title" placeholder="<%= t('adminChapterTitlePlaceholder') %>" required />
+      <div class="two-grid">
+        <input class="input" name="number" type="number" min="1" step="1" placeholder="<%= t('adminChapterNumberPlaceholder') %>" required />
+        <input class="input" name="estimatedMinutes" type="number" min="1" step="1" placeholder="<%= t('adminEstimatedMinutesPlaceholder') %>" />
+      </div>
+      <label class="upload-label"><%= t('adminPageImagesUpload') %><input type="file" name="pages" accept="image/*" multiple required /></label>
+      <div class="panel upload-preview hidden" id="chapter-pages-preview" aria-live="polite">
+        <strong><%= t('adminUploadPreview') %></strong>
+        <p class="muted" id="chapter-pages-summary"></p>
+        <ol class="upload-order-list" id="chapter-pages-list"></ol>
+      </div>
+      <button class="button button-primary" type="submit"><%= t('adminUploadChapterButton') %></button>
+    </form>
+  </section>
+
+  <section class="panel stack-md">
+    <div>
+      <p class="eyebrow"><%= t('adminManageCatalogEyebrow') %></p>
+      <h2><%= t('adminManageCatalogTitle') %></h2>
+    </div>
+    <% if (!series.length) { %><p class="muted"><%= t('adminNoSeriesYet') %></p><% } %>
+    <div class="catalog-admin-list stack-md">
+      <% series.forEach((item) => { %>
+        <article class="panel-soft catalog-admin-card stack-md">
+          <div class="catalog-admin-head">
+            <div class="stack-xs">
+              <strong><%= item.title %></strong>
+              <div class="muted"><%= item.slug %> • <%= item.chapters.length %> <%= t('chaptersEyebrow').toLowerCase() %></div>
+            </div>
+            <form action="/admin/series/<%= item.slug %>/delete" method="post" class="inline-form">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+              <button class="button button-secondary button-small" type="submit"><%= t('adminDeleteSeries') %></button>
+            </form>
+          </div>
+          <div class="stack-sm">
+            <p class="eyebrow"><%= t('adminPublishedChapters') %></p>
+            <% if (!item.chapters.length) { %>
+              <p class="muted"><%= t('cardNoChapters') %></p>
+            <% } %>
+            <% item.chapters.forEach((chapter) => { %>
+              <div class="catalog-admin-chapter-row">
+                <div>
+                  <strong><%= chapter.title %></strong>
+                  <div class="muted"><%= chapter.slug %> • <%= chapter.number %></div>
+                </div>
+                <form action="/admin/series/<%= item.slug %>/chapters/<%= chapter.slug %>/delete" method="post" class="inline-form">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                  <button class="button button-secondary button-small" type="submit"><%= t('adminDeleteChapter') %></button>
+                </form>
+              </div>
+            <% }) %>
+          </div>
+        </article>
+      <% }) %>
+    </div>
+  </section>
+
+  <section class="panel stack-md">
+    <div>
+      <p class="eyebrow"><%= t('adminModerationEyebrow') %></p>
+      <h2><%= t('adminModerationTitle') %></h2>
+    </div>
+    <% if (!recentComments.length) { %><p class="muted"><%= t('adminNoComments') %></p><% } %>
+    <% recentComments.forEach((comment) => { %>
+      <article class="comment-card">
+        <div class="comment-head">
+          <div>
+            <strong>@<%= comment.username %></strong>
+            <div class="muted"><%= comment.seriesSlug %> / <%= comment.chapterSlug %> • <%= new Date(comment.createdAt).toLocaleString() %></div>
+          </div>
+          <form action="/comments/<%= comment.id %>/delete" method="post" class="inline-form">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+            <input type="hidden" name="returnTo" value="/admin" />
+            <button class="button button-secondary button-small" type="submit"><%= t('adminDeleteComment') %></button>
+          </form>
+        </div>
+        <p><%= comment.body %></p>
+      </article>
+    <% }) %>
+  </section>
+</main>
+<%- include('../partials/footer') %>

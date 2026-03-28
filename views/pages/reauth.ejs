@@ -1,0 +1,22 @@
+<%- include('../partials/head', { pageTitle }) %>
+<%- include('../partials/header') %>
+<main class="shell section-gap">
+  <section class="auth-shell panel">
+    <div class="stack-md">
+      <p class="eyebrow"><%= t('reauthEyebrow') %></p>
+      <h1><%= t('reauthTitle') %></h1>
+      <p class="lead"><%= t('reauthLead') %></p>
+      <form action="/reauth" method="post" class="stack-md">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <input type="hidden" name="next" value="<%= nextUrl %>" />
+        <input class="input" type="password" name="password" placeholder="<%= t('reauthCurrentPasswordPlaceholder') %>" required />
+        <button class="button button-primary" type="submit"><%= t('reauthButton') %></button>
+      </form>
+    </div>
+    <div class="panel-soft auth-aside">
+      <p class="eyebrow"><%= t('reauthWhyEyebrow') %></p>
+      <p class="muted"><%= t('reauthWhyLead') %></p>
+    </div>
+  </section>
+</main>
+<%- include('../partials/footer') %>

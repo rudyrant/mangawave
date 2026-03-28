@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 700">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#111827"/>
+      <stop offset="50%" stop-color="#312e81"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="700" fill="url(#g)"/>
+  <circle cx="1240" cy="180" r="150" fill="#a78bfa" fill-opacity="0.18"/>
+  <circle cx="320" cy="540" r="240" fill="#38bdf8" fill-opacity="0.14"/>
+  <text x="120" y="310" fill="#ffffff" font-size="96" font-family="Arial, sans-serif" font-weight="800">MangaWave</text>
+  <text x="120" y="390" fill="#ddd6fe" font-size="38" font-family="Arial, sans-serif">Self-host your own vertical reading library</text>
+</svg>

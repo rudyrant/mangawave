@@ -1,0 +1,46 @@
+{
+  "entries": [
+    {
+      "bucket": "auth",
+      "key": "91.184.125.249",
+      "windowStart": 1774719600000,
+      "count": 3
+    },
+    {
+      "bucket": "forgot-ip",
+      "key": "91.184.125.249",
+      "windowStart": 1774719600000,
+      "count": 1
+    },
+    {
+      "bucket": "forgot-account",
+      "key": "508cf0f35c8babb45bf566fec699f6676ce01bb67bac1dc8f496ba03bd9994ed",
+      "windowStart": 1774719600000,
+      "count": 1
+    },
+    {
+      "bucket": "auth",
+      "key": "91.184.125.249",
+      "windowStart": 1774720800000,
+      "count": 2
+    },
+    {
+      "bucket": "auth",
+      "key": "91.184.125.249",
+      "windowStart": 1774721400000,
+      "count": 3
+    },
+    {
+      "bucket": "auth",
+      "key": "91.184.125.249",
+      "windowStart": 1774722000000,
+      "count": 1
+    },
+    {
+      "bucket": "admin",
+      "key": "213.200.15.179",
+      "windowStart": 1774722900000,
+      "count": 3
+    }
+  ]
+}

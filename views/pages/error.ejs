@@ -1,0 +1,11 @@
+<%- include('../partials/head', { pageTitle }) %>
+<%- include('../partials/header') %>
+<main class="shell section-gap">
+  <section class="panel stack-md center-card">
+    <p class="eyebrow"><%= t('errorServerEyebrow') %></p>
+    <h1><%= t('errorServerTitle') %></h1>
+    <p class="lead"><%= error && error.message ? error.message : t('errorUnknown') %></p>
+    <a href="/admin" class="button button-primary"><%= t('errorBackToAdmin') %></a>
+  </section>
+</main>
+<%- include('../partials/footer') %>

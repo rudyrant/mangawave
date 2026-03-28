@@ -1,0 +1,96 @@
+<%- include('../partials/head', { pageTitle }) %>
+<%- include('../partials/header') %>
+<main class="shell stack-lg section-gap">
+  <section class="account-hero panel">
+    <div class="stack-sm">
+      <p class="eyebrow"><%= t('accountHeroEyebrow') %></p>
+      <h1>@<%= currentUser.username %></h1>
+      <p class="lead"><%- t('accountSignedInAs', { email: currentUser.email, role: currentUser.role }) %></p>
+      <p class="muted"><%- t('accountEmailStatus', { status: currentUser.emailVerified ? t('accountEmailVerified') : t('accountEmailUnverified') }) %><% if (currentUser.emailVerifiedAt) { %> • <%= t('accountEmailVerifiedAt', { date: new Date(currentUser.emailVerifiedAt).toLocaleString(lang === 'ka' ? 'ka-GE' : 'en-US') }) %><% } %></p>
+      <% if (progressCards[0]) { %>
+        <p class="muted"><%= t('accountLatestSession', { series: progressCards[0].series.title, chapter: progressCards[0].chapterLabel }) %></p>
+      <% } %>
+    </div>
+    <div class="button-row">
+      <% if (progressCards[0]) { %><a href="/read/<%= progressCards[0].seriesSlug %>/<%= progressCards[0].chapterSlug %>" class="button button-primary"><%= t('accountContinue', { chapter: progressCards[0].chapterLabel }) %></a><% } else { %><a href="/series" class="button button-primary"><%= t('accountBrowse') %></a><% } %>
+      <% if (progressCards[0]) { %><a href="/series" class="button button-secondary"><%= t('accountBrowse') %></a><% } %>
+      <% if (currentUser.role === 'admin') { %><a href="/admin" class="button button-secondary"><%= t('accountOpenAdmin') %></a><% } %>
+    </div>
+  </section>
+
+  <% if (emailVerificationEnabled && !currentUser.emailVerified) { %>
+    <section class="panel stack-md">
+      <div>
+        <p class="eyebrow"><%= t('accountVerifyEyebrow') %></p>
+        <h2><%= t('accountVerifyTitle') %></h2>
+      </div>
+      <p class="muted"><%= t('accountVerifyLead') %></p>
+      <form action="/account/verify-email/resend" method="post" class="inline-form">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <button class="button button-secondary" type="submit"><%= t('accountVerifyButton') %></button>
+      </form>
+    </section>
+  <% } %>
+
+  <section class="info-grid info-grid-wide">
+    <div class="panel info-card"><span><%= t('accountJoined') %></span><strong><%= new Date(currentUser.createdAt).toLocaleDateString(lang === 'ka' ? 'ka-GE' : 'en-US') %></strong></div>
+    <div class="panel info-card"><span><%= t('accountSeriesAvailable') %></span><strong><%= stats.seriesCount %></strong></div>
+    <div class="panel info-card"><span><%= t('accountChaptersAvailable') %></span><strong><%= stats.chapterCount %></strong></div>
+    <div class="panel info-card"><span><%= t('accountFeaturedCount') %></span><strong><%= stats.featuredCount %></strong></div>
+  </section>
+
+  <section class="account-columns">
+    <div class="panel stack-md">
+      <div>
+        <p class="eyebrow"><%= t('accountBookmarksEyebrow') %></p>
+        <h2><%= t('accountBookmarksTitle') %></h2>
+      </div>
+      <% if (!bookmarkCards.length) { %><p class="muted"><%= t('accountBookmarksEmpty') %></p><% } %>
+      <% bookmarkCards.forEach((item) => { %>
+        <a href="/series/<%= item.series.slug %>" class="history-item">
+          <img src="<%= item.series.coverThumbImage || item.series.coverImage %>" alt="<%= item.series.title %>" />
+          <div>
+            <strong><%= item.series.title %></strong>
+            <div class="muted"><%= t('accountBookmarkSavedAt', { chapter: item.chapterLabel }) %></div>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+
+    <div class="panel stack-md">
+      <div>
+        <p class="eyebrow"><%= t('accountProgressEyebrow') %></p>
+        <h2><%= t('accountProgressResumeTitle') %></h2>
+      </div>
+      <% if (!progressCards.length) { %><p class="muted"><%= t('accountProgressEmpty') %></p><% } %>
+      <% progressCards.forEach((item) => { %>
+        <a href="/read/<%= item.seriesSlug %>/<%= item.chapterSlug %>" class="history-item">
+          <img src="<%= item.series.coverThumbImage || item.series.coverImage %>" alt="<%= item.series.title %>" />
+          <div>
+            <strong><%= item.series.title %></strong>
+            <div class="muted"><%= t('accountProgressResume', { chapter: item.chapterLabel }) %></div>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+  </section>
+
+  <section class="panel stack-md">
+    <div>
+      <p class="eyebrow"><%= t('accountSecurityEyebrow') %></p>
+      <h2><%= t('accountSecurityTitle') %></h2>
+    </div>
+    <% if (!recentAuth) { %>
+      <p class="muted"><%= t('accountSecurityRecentAuth') %> <a class="text-link" href="/reauth?next=/account"><%= t('accountSecurityConfirmLink') %></a>.</p>
+    <% } %>
+    <form action="/account/password" method="post" class="stack-md narrow-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <input class="input" type="password" name="currentPassword" placeholder="<%= t('accountPasswordCurrentPlaceholder') %>" required />
+      <input class="input" type="password" name="newPassword" placeholder="<%= t('accountPasswordNewPlaceholder') %>" required />
+      <input class="input" type="password" name="confirmPassword" placeholder="<%= t('accountPasswordConfirmPlaceholder') %>" required />
+      <button class="button button-primary" type="submit"><%= t('accountPasswordUpdate') %></button>
+    </form>
+  </section>
+
+</main>
+<%- include('../partials/footer') %>

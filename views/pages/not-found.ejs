@@ -1,0 +1,11 @@
+<%- include('../partials/head', { pageTitle }) %>
+<%- include('../partials/header') %>
+<main class="shell section-gap">
+  <section class="panel stack-md center-card">
+    <p class="eyebrow">404</p>
+    <h1><%= t('error404Title') %></h1>
+    <p class="lead"><%= t('error404Lead') %></p>
+    <a href="/" class="button button-primary"><%= t('errorBackHome') %></a>
+  </section>
+</main>
+<%- include('../partials/footer') %>

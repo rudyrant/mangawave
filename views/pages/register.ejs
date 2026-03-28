@@ -1,0 +1,31 @@
+<%- include('../partials/head', { pageTitle }) %>
+<%- include('../partials/header') %>
+<main class="shell section-gap">
+  <section class="auth-shell panel">
+    <div class="stack-md">
+      <p class="eyebrow"><%= t('registerEyebrow') %></p>
+      <h1><%= t('registerTitle') %></h1>
+      <p class="lead"><%= t('registerLead') %></p>
+      <form action="/register" method="post" class="stack-md">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <input type="hidden" name="next" value="<%= nextUrl %>" />
+        <input class="input" type="text" name="username" placeholder="<%= t('registerUsernamePlaceholder') %>" required />
+        <input class="input" type="email" name="email" placeholder="<%= t('registerEmailPlaceholder') %>" required />
+        <input class="input" type="password" name="password" placeholder="<%= t('registerPasswordPlaceholder') %>" required />
+        <input class="input" type="password" name="confirmPassword" placeholder="<%= t('registerConfirmPasswordPlaceholder') %>" required />
+        <button class="button button-primary" type="submit"><%= t('registerButton') %></button>
+      </form>
+      <% if (emailVerificationEnabled) { %><p class="muted"><%= t('registerVerificationNote') %></p><% } %>
+      <p class="muted"><%= t('registerHasAccount') %> <a href="/login" class="text-link"><%= t('registerHasAccountLink') %></a></p>
+    </div>
+    <div class="panel-soft auth-aside">
+      <p class="eyebrow"><%= t('registerWhyEyebrow') %></p>
+      <ul>
+        <li><%= t('registerBenefitProgress') %></li>
+        <li><%= t('registerBenefitBookmarks') %></li>
+        <li><%= t('registerBenefitRecovery') %></li>
+      </ul>
+    </div>
+  </section>
+</main>
+<%- include('../partials/footer') %>

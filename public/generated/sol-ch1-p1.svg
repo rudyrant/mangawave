@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920">
+  <rect width="1080" height="1920" fill="#030712"/>
+  <rect x="70" y="70" width="940" height="1780" rx="42" fill="#111827" stroke="#8b5cf6" stroke-width="6"/>
+  <circle cx="870" cy="300" r="160" fill="#8b5cf6" fill-opacity="0.16"/>
+  <rect x="140" y="220" width="520" height="420" rx="28" fill="#0f172a" stroke="#ffffff" stroke-opacity="0.08"/>
+  <rect x="420" y="780" width="520" height="420" rx="28" fill="#0f172a" stroke="#ffffff" stroke-opacity="0.08"/>
+  <rect x="140" y="1340" width="800" height="280" rx="28" fill="#0f172a" stroke="#ffffff" stroke-opacity="0.08"/>
+  <text x="140" y="150" fill="#c4b5fd" font-size="36" font-family="Arial, sans-serif">MangaWave Demo Page</text>
+  <text x="140" y="720" fill="#ffffff" font-size="82" font-family="Arial, sans-serif" font-weight="800">Sol Archive • Chapter 1</text>
+  <text x="140" y="810" fill="#e5e7eb" font-size="38" font-family="Arial, sans-serif">Rain. Neon. A courier falls from the sky.</text>
+  <text x="140" y="1710" fill="#cbd5e1" font-size="32" font-family="Arial, sans-serif">Replace these SVGs with your real chapter images from the admin uploader.</text>
+</svg>

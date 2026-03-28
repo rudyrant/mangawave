@@ -1,0 +1,108 @@
+<%- include('../partials/head', { pageTitle }) %>
+<main class="reader-page">
+  <header class="reader-header">
+    <div class="reader-topbar">
+      <div>
+        <a href="/series/<%= series.slug %>" class="text-link"><%= t('readerBack') %></a>
+        <h1><%= series.title %> • <%= lang === 'ka' ? 'თავი' : 'Chapter' %> <%= chapter.number %></h1>
+      </div>
+      <div class="button-row">
+        <% if (previous) { %><a href="/read/<%= series.slug %>/<%= previous.slug %>" class="button button-secondary"><%= t('readerPrev') %></a><% } %>
+        <% if (nextChapter) { %><a href="/read/<%= series.slug %>/<%= nextChapter.slug %>" class="button button-primary"><%= t('readerNext') %></a><% } %>
+      </div>
+    </div>
+    <div class="reader-progress-shell" aria-hidden="true">
+      <div class="reader-progress-meta">
+        <span><%= t('readerProgress') %></span>
+        <strong id="reader-progress-label">0%</strong>
+      </div>
+      <div class="reader-progress-track">
+        <div class="reader-progress-bar" id="reader-progress-bar"></div>
+      </div>
+    </div>
+  </header>
+
+  <% if (flash && flash.message) { %>
+    <div class="shell flash-wrap">
+      <div class="flash flash-<%= flash.type %>"><%= flash.message %></div>
+    </div>
+  <% } %>
+
+  <section class="reader-stack" id="reader-pages">
+    <% chapter.pages.forEach((page, index) => { %>
+      <img src="<%= page %>" alt="<%= `${series.title} chapter ${chapter.number} page ${index + 1}` %>" class="reader-image" />
+    <% }) %>
+  </section>
+
+  <section class="shell reader-endcap">
+    <div class="panel reader-endcap-card stack-md">
+      <div>
+        <p class="eyebrow"><%= t('readerCompleteEyebrow') %></p>
+        <h2><%= t('readerCompleteTitle') %></h2>
+        <p class="muted"><%= t('readerCompleteLead') %></p>
+      </div>
+      <div class="button-row reader-endcap-actions">
+        <% if (previous) { %><a href="/read/<%= series.slug %>/<%= previous.slug %>" class="button button-secondary"><%= t('readerPrevFull') %></a><% } %>
+        <a href="/series/<%= series.slug %>" class="button button-secondary"><%= t('readerSeriesPage') %></a>
+        <% if (nextChapter) { %><a href="/read/<%= series.slug %>/<%= nextChapter.slug %>" class="button button-primary"><%= t('readerNextFull') %></a><% } %>
+      </div>
+    </div>
+  </section>
+
+  <section class="shell section-gap reader-comments-wrap">
+    <div class="panel stack-md">
+      <div>
+        <p class="eyebrow">Chapter comments</p>
+        <h2>Reader discussion</h2>
+      </div>
+
+      <% if (currentUser && currentUser.emailVerified) { %>
+        <form action="/comments" method="post" class="stack-md">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          <input type="hidden" name="seriesSlug" value="<%= series.slug %>" />
+          <input type="hidden" name="chapterSlug" value="<%= chapter.slug %>" />
+          <input type="hidden" name="returnTo" value="/read/<%= series.slug %>/<%= chapter.slug %>" />
+          <textarea name="body" class="input textarea" placeholder="Leave a comment about this chapter" required></textarea>
+          <button class="button button-primary" type="submit">Post comment</button>
+        </form>
+      <% } else if (currentUser) { %>
+        <p class="muted">Verify your email before posting comments.</p>
+      <% } else { %>
+        <p class="muted">Log in to post comments and sync reading progress.</p>
+      <% } %>
+
+      <% if (!comments.length) { %><p class="muted">No comments yet.</p><% } %>
+
+      <% comments.forEach((comment) => { %>
+        <article class="comment-card">
+          <div class="comment-head">
+            <div>
+              <strong>@<%= comment.username %></strong>
+              <div class="muted"><%= new Date(comment.createdAt).toLocaleString() %></div>
+            </div>
+            <% if (currentUser && (currentUser.role === 'admin' || currentUser.id === comment.userId)) { %>
+              <form action="/comments/<%= comment.id %>/delete" method="post" class="inline-form">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                <input type="hidden" name="returnTo" value="/read/<%= series.slug %>/<%= chapter.slug %>" />
+                <button class="button button-secondary button-small" type="submit">Delete</button>
+              </form>
+            <% } %>
+          </div>
+          <p><%= comment.body %></p>
+        </article>
+      <% }) %>
+    </div>
+  </section>
+</main>
+<script nonce="<%= cspNonce %>">
+  window.__MW_READER__ = {
+    seriesSlug: <%- JSON.stringify(series.slug) %>,
+    chapterSlug: <%- JSON.stringify(chapter.slug) %>,
+    chapterLabel: <%- JSON.stringify(`${lang === 'ka' ? 'თავი' : 'Chapter'} ${chapter.number}`) %>,
+    loggedIn: <%- JSON.stringify(Boolean(currentUser)) %>,
+    csrfToken: <%- JSON.stringify(csrfToken) %>
+  };
+</script>
+<script src="/app.js"></script>
+</body>
+</html>

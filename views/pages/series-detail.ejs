@@ -1,0 +1,70 @@
+<%- include('../partials/head', { pageTitle }) %>
+<%- include('../partials/header') %>
+<main class="shell stack-lg section-gap">
+  <section class="panel detail-hero">
+    <img src="<%= series.bannerImage %>" alt="<%= series.title %> banner" class="detail-banner" />
+    <div class="detail-grid">
+      <img src="<%= series.coverImage %>" alt="<%= series.title %> cover" class="detail-cover" />
+      <div class="stack-md">
+        <div class="tag-row wrap">
+          <span class="chip chip-accent"><%= series.type %></span>
+          <span class="chip"><%= series.status %></span>
+          <% series.genres.forEach((genre) => { %><span class="chip"><%= genre %></span><% }) %>
+        </div>
+        <div class="stack-sm">
+          <h1><%= series.title %></h1>
+          <p class="lead"><%= series.description %></p>
+        </div>
+        <div class="meta-grid">
+          <div class="panel-soft meta-card"><span>Author</span><strong><%= series.author %></strong></div>
+          <div class="panel-soft meta-card"><span>Artist</span><strong><%= series.artist %></strong></div>
+          <div class="panel-soft meta-card"><span>Updated</span><strong><%= new Date(series.updatedAt).toLocaleDateString() %></strong></div>
+        </div>
+        <% if (latestChapter) { %>
+          <div class="button-row">
+            <% if (continueReading) { %>
+              <a href="/read/<%= series.slug %>/<%= continueReading.chapterSlug %>" class="button button-primary" id="series-continue-reading"><%= t('cardContinue', { chapter: continueReading.chapterLabel }) %></a>
+            <% } else { %>
+              <a href="/read/<%= series.slug %>/<%= latestChapter.slug %>" class="button button-primary" id="series-continue-reading"><%= t('seriesStart') %></a>
+            <% } %>
+            <a href="/read/<%= series.slug %>/<%= latestChapter.slug %>" class="button button-secondary"><%= t('seriesLatest') %></a>
+            <% if (currentUser) { %>
+              <form action="/bookmark/toggle" method="post" class="inline-form">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                <input type="hidden" name="seriesSlug" value="<%= series.slug %>" />
+                <input type="hidden" name="chapterSlug" value="<%= latestChapter.slug %>" />
+                <input type="hidden" name="chapterLabel" value="Chapter <%= latestChapter.number %>" />
+                <input type="hidden" name="returnTo" value="/series/<%= series.slug %>" />
+                <button class="button button-secondary" type="submit"><%= bookmarked ? 'Remove bookmark' : 'Bookmark series' %></button>
+              </form>
+            <% } else { %>
+              <button class="button button-secondary" data-bookmark-mode="guest" data-bookmark-series="<%= series.slug %>" data-bookmark-chapter="<%= latestChapter.slug %>" data-bookmark-label="Chapter <%= latestChapter.number %>">Bookmark on this device</button>
+            <% } %>
+          </div>
+          <p class="muted" id="series-resume-hint" data-series-resume-series="<%= series.slug %>" data-series-latest-slug="<%= latestChapter.slug %>"><% if (continueReading) { %><%= t('seriesResumeHint', { chapter: continueReading.chapterLabel }) %><% } else { %><%= t('seriesStartHint') %><% } %></p>
+        <% } %>
+      </div>
+    </div>
+  </section>
+
+  <section class="stack-md">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Chapters</p>
+        <h2>Vertical reading queue</h2>
+      </div>
+    </div>
+    <div class="stack-sm">
+      <% chapters.forEach((chapter) => { %>
+        <a href="/read/<%= series.slug %>/<%= chapter.slug %>" class="panel chapter-row">
+          <div>
+            <h3>Chapter <%= chapter.number %>: <%= chapter.title %></h3>
+            <p class="muted"><%= new Date(chapter.publishedAt).toLocaleDateString() %> • <%= chapter.pages.length %> pages</p>
+          </div>
+          <span class="text-link">Read →</span>
+        </a>
+      <% }) %>
+    </div>
+  </section>
+</main>
+<%- include('../partials/footer') %>

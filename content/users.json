@@ -1,0 +1,31 @@
+{
+  "users": [
+    {
+      "id": "user_1774653286383",
+      "email": "admin@mangawave.local",
+      "username": "admin",
+      "passwordHash": "$2b$10$xtvIbiv220qpO4XTyd/PcOsCKcmsRnSlyc0HlykODajVjTLRElXqq",
+      "role": "admin",
+      "createdAt": "2026-03-27T23:14:46.383Z"
+    },
+    {
+      "id": "user_1774654310559",
+      "email": "erick.bean131@gmail.com",
+      "username": "rudyrant",
+      "passwordHash": "$2b$10$.kraM18VjFqFps4SnMsfS.IkL24ZhOxqKmE2JmSPEKqXjkNwY2x4i",
+      "role": "reader",
+      "createdAt": "2026-03-27T23:31:50.559Z"
+    },
+    {
+      "id": "user_1774713462612",
+      "email": "erick.bean132@gmail.com",
+      "username": "erickbean132",
+      "passwordHash": "$2b$10$Jxxnpp2pgPcD4boOZNKmZum6ExBnKROUI/zxfuikchCE7s5xYyKua",
+      "role": "admin",
+      "sessionVersion": 3,
+      "emailVerified": true,
+      "emailVerifiedAt": "2026-03-28T15:58:35.084Z",
+      "createdAt": "2026-03-28T15:57:42.612Z"
+    }
+  ]
+}

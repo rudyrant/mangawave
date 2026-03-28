@@ -1,0 +1,164 @@
+<%- include('../partials/head', { pageTitle }) %>
+<%- include('../partials/header') %>
+<main class="shell stack-xl section-gap">
+  <section class="hero premium-hero panel">
+    <div class="hero-copy stack-md">
+      <span class="chip chip-accent"><%= t('homeHeroBadge') %></span>
+      <div class="stack-sm">
+        <h1><%= t('homeHeroTitle') %></h1>
+        <p class="lead"><%= t('homeHeroLead') %></p>
+      </div>
+      <div class="button-row">
+        <a href="/series" class="button button-primary"><%= t('homeOpenMain') %></a>
+        <% if (currentUser) { %>
+          <a href="/account" class="button button-secondary"><%= t('homeOpenAccount') %></a>
+        <% } else { %>
+          <a href="/register" class="button button-secondary"><%= t('homeCreateAccount') %></a>
+        <% } %>
+      </div>
+      <div class="stats-grid premium-stats">
+        <div class="stat-card"><strong><%= series.length %></strong><span><%= t('statSeries') %></span></div>
+        <div class="stat-card"><strong><%= totalChapters %></strong><span><%= t('statChapters') %></span></div>
+        <div class="stat-card"><strong><%= userCount %></strong><span><%= t('statUsers') %></span></div>
+        <div class="stat-card"><strong><%= featured.length %></strong><span><%= t('statFeatured') %></span></div>
+      </div>
+    </div>
+    <div class="hero-side stack-md">
+      <div class="hero-art panel-soft glass-card">
+        <img src="<%= featured[0] ? featured[0].bannerImage : (series[0] ? series[0].bannerImage : '/generated/default-banner.svg') %>" alt="Featured artwork" />
+      </div>
+      <div class="panel-soft feature-list">
+        <div>
+          <p class="eyebrow"><%= t('sectionFeaturedEyebrow') %></p>
+          <h3><%= featured[0] ? featured[0].title : 'MangaWave' %></h3>
+        </div>
+        <ul>
+          <li><%= featured[0]?.shortDescription || t('homeHeroLead') %></li>
+          <li><%= t('siteTagline') %></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="stack-md">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow"><%= t('sectionContinueEyebrow') %></p>
+        <h2><%= t('sectionContinueTitle') %></h2>
+      </div>
+    </div>
+    <div class="panel stack-sm" id="history-panel">
+      <p class="muted"><%= t('sectionContinueEmpty') %></p>
+    </div>
+  </section>
+
+  <section class="stack-md">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow"><%= t('sectionPopularEyebrow') %></p>
+        <h2><%= t('sectionPopularTitle') %></h2>
+      </div>
+      <a href="/series" class="text-link"><%= t('viewAll') %></a>
+    </div>
+    <div class="card-grid">
+      <% popular.forEach((item) => { %>
+        <a href="/series/<%= item.slug %>" class="series-card panel">
+          <img src="<%= item.coverImage %>" alt="<%= item.title %>" class="series-cover" />
+          <div class="card-body stack-sm">
+            <div class="tag-row">
+              <span class="chip"><%= item.type %></span>
+              <span class="chip"><%= t('seriesCountLabel', { count: item.chapters.length }) %></span>
+            </div>
+            <div>
+              <h3><%= item.title %></h3>
+              <p class="muted clamp-two"><%= item.shortDescription %></p>
+            </div>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+  </section>
+
+  <section class="stack-md">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow"><%= t('sectionNewEyebrow') %></p>
+        <h2><%= t('sectionNewTitle') %></h2>
+      </div>
+    </div>
+    <div class="card-grid">
+      <% fresh.forEach((item) => { %>
+        <a href="/series/<%= item.slug %>" class="series-card panel">
+          <img src="<%= item.coverImage %>" alt="<%= item.title %>" class="series-cover" />
+          <div class="card-body stack-sm">
+            <div class="tag-row">
+              <span class="chip"><%= item.type %></span>
+              <span class="chip"><%= item.chapters[0] ? t('cardLatest', { chapter: `Ch. ${item.chapters[0].number}` }) : t('cardNoChapters') %></span>
+            </div>
+            <div>
+              <h3><%= item.title %></h3>
+              <p class="muted clamp-two"><%= item.shortDescription %></p>
+            </div>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+  </section>
+
+  <section class="stack-md">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow"><%= t('sectionUpdatedEyebrow') %></p>
+        <h2><%= t('sectionUpdatedTitle') %></h2>
+      </div>
+    </div>
+    <div class="card-grid">
+      <% recentlyUpdated.forEach((item) => { %>
+        <a href="/series/<%= item.slug %>" class="series-card panel">
+          <img src="<%= item.coverImage %>" alt="<%= item.title %>" class="series-cover" />
+          <div class="card-body stack-sm">
+            <div class="tag-row">
+              <span class="chip"><%= item.status %></span>
+              <span class="chip"><%= new Date(item.updatedAt).toLocaleDateString(lang === 'ka' ? 'ka-GE' : 'en-US') %></span>
+            </div>
+            <div>
+              <h3><%= item.title %></h3>
+              <p class="muted clamp-two"><%= item.shortDescription %></p>
+            </div>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+  </section>
+
+  <section class="stack-md">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow"><%= t('sectionFeaturedEyebrow') %></p>
+        <h2><%= t('sectionFeaturedTitle') %></h2>
+      </div>
+      <a href="/series" class="text-link"><%= t('viewAll') %></a>
+    </div>
+    <div class="card-grid">
+      <% featured.forEach((item) => { %>
+        <a href="/series/<%= item.slug %>" class="series-card panel">
+          <img src="<%= item.coverImage %>" alt="<%= item.title %>" class="series-cover" />
+          <div class="card-body stack-sm">
+            <div class="tag-row">
+              <span class="chip"><%= item.type %></span>
+              <span class="chip"><%= item.status %></span>
+            </div>
+            <div>
+              <h3><%= item.title %></h3>
+              <p class="muted clamp-two"><%= item.shortDescription %></p>
+            </div>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+  </section>
+</main>
+<script nonce="<%= cspNonce %>">
+  window.__MW_LIBRARY__ = <%- JSON.stringify(series.map(item => ({ seriesSlug: item.slug, title: item.title, coverImage: item.coverImage, latestChapterLabel: item.chapters[0] ? `${lang === 'ka' ? 'თავი' : 'Chapter'} ${item.chapters[0].number}` : (lang === 'ka' ? 'თავები ჯერ არ არის' : 'No chapters yet') }))) %>;
+</script>
+<%- include('../partials/footer') %>

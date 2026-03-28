@@ -1,0 +1,45 @@
+<%- include('../partials/head', { pageTitle }) %>
+<%- include('../partials/header') %>
+<main class="shell stack-lg section-gap">
+  <section class="stack-sm">
+    <p class="eyebrow"><%= t('libraryEyebrow') %></p>
+    <h1><%= t('libraryTitle') %></h1>
+    <p class="lead"><%= t('libraryLead') %></p>
+  </section>
+
+  <section class="panel stack-md">
+    <div class="filter-grid">
+      <input id="library-search" class="input" type="search" placeholder="<%= t('searchPlaceholder') %>" />
+      <select id="library-genre" class="input">
+        <option value="All"><%= t('allGenres') %></option>
+        <% genres.forEach((genre) => { %>
+          <option value="<%= genre %>"><%= genre %></option>
+        <% }) %>
+      </select>
+    </div>
+  </section>
+
+  <section class="card-grid" id="series-grid">
+    <% series.forEach((item) => { %>
+      <a href="/series/<%= item.slug %>" class="series-card panel searchable-series" data-search="<%= `${item.title} ${item.shortDescription} ${item.genres.join(' ')} ${item.tags.join(' ')}`.toLowerCase() %>" data-genres="<%= item.genres.join('|') %>" data-series-slug="<%= item.slug %>" data-latest-chapter-slug="<%= item.chapters[0] ? item.chapters[0].slug : '' %>" data-latest-chapter-label="<%= item.chapters[0] ? `Chapter ${item.chapters[0].number}` : 'No chapters yet' %>">
+        <img src="<%= item.coverImage %>" alt="<%= item.title %>" class="series-cover" />
+        <div class="card-body stack-sm">
+          <div class="tag-row">
+            <span class="chip"><%= item.type %></span>
+            <span class="chip"><%= item.status %></span>
+          </div>
+          <div>
+            <h3><%= item.title %></h3>
+            <p class="muted clamp-two"><%= item.shortDescription %></p>
+          </div>
+          <div class="muted small-row">
+            <span><%= item.chapters.length %> chapters</span>
+            <span class="series-card-resume-label"><%= progressMap?.[item.slug] ? `Continue ${progressMap[item.slug]}` : (item.chapters[0] ? `Latest ${`Ch. ${item.chapters[0].number}`}` : 'No chapters yet') %></span>
+          </div>
+        </div>
+      </a>
+    <% }) %>
+  </section>
+  <div id="empty-library" class="panel empty-state hidden"><%= t('noSeriesMatch') %></div>
+</main>
+<%- include('../partials/footer') %>

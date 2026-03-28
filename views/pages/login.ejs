@@ -1,0 +1,21 @@
+<%- include('../partials/head', { pageTitle }) %>
+<%- include('../partials/header') %>
+<main class="shell section-gap">
+  <section class="auth-shell panel">
+    <div class="stack-md">
+      <p class="eyebrow"><%= t('loginEyebrow') %></p>
+      <h1><%= t('loginTitle') %></h1>
+      <p class="lead"><%= t('loginLead') %></p>
+      <form action="/login" method="post" class="stack-md">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <input type="hidden" name="next" value="<%= nextUrl %>" />
+        <input class="input" type="email" name="email" placeholder="<%= t('loginEmailPlaceholder') %>" required />
+        <input class="input" type="password" name="password" placeholder="<%= t('loginPasswordPlaceholder') %>" required />
+        <button class="button button-primary" type="submit"><%= t('loginButton') %></button>
+      </form>
+      <p class="muted"><%= t('loginNeedAccount') %> <a href="/register" class="text-link"><%= t('loginNeedAccountLink') %></a></p>
+      <p class="muted"><a href="/forgot-password" class="text-link"><%= t('loginForgotPasswordLink') %></a></p>
+    </div>
+  </section>
+</main>
+<%- include('../partials/footer') %>

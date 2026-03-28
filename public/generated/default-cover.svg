@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200">
+  <rect width="900" height="1200" fill="#12121a"/>
+  <rect x="50" y="50" width="800" height="1100" rx="48" fill="#1d1633" stroke="#8b5cf6" stroke-width="6"/>
+  <text x="450" y="520" fill="#ffffff" text-anchor="middle" font-size="84" font-family="Arial, sans-serif" font-weight="800">MangaWave</text>
+  <text x="450" y="610" fill="#c4b5fd" text-anchor="middle" font-size="42" font-family="Arial, sans-serif">Upload your own cover art</text>
+</svg>
